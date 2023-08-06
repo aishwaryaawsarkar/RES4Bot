@@ -28,7 +28,7 @@ start_suggestion = False
 # Define the list of questions and their corresponding keywords
 questions = [
     ("education_level", "What is your current education level?"),
-    ("field_of_study", "What is your major or field of study in your program?"),
+    ("field_of_study", "What is your major or field of study in your undergraduate program?"),
     ("skills", "What are your skills and areas of expertise?"),
     ("interests", "What are your interests?"),
     ("location", "What is your preferred job location?")
@@ -63,14 +63,14 @@ def perform_job_search(interests, location, field_of_study, skills):
             location_element = listing.find('span', class_='job-search-card__location')
             job_location = location_element.text.strip() if location_element else "N/A"
 
-            #link_element = listing.find('a', href=True, class_='base-search-card__full-link')
-            #job_link = link_element['href'] if link_element else None
+            link_element = listing.find('a', href=True, class_='base-search-card__full-link')
+            job_link = link_element['href'] if link_element else None
 
-        job_details.append({
+            job_details.append({
                 "job_title": job_title,
                 "company_name": company_name,
                 "job_location": job_location,
-                #"job_link": job_link
+                "job_link": job_link
             })
 
         return job_details
@@ -102,6 +102,67 @@ def suggest_subjects(suggested_courses):
     return subject_dict
 
 
+# def get_Chat_response(text):
+#     # Convert the user input to lowercase for consistency
+#     user_input = user_input.lower()
+#
+#     # Check if the user wants to exit the conversation
+#     if user_input == 'exit':
+#         return None, "Goodbye! Have a great day."
+#
+#     # Store the user's answers to the questions
+#     user_answers = {}
+#     for question in questions:
+#         user_answers[question[0]] = input(question[1] + " ")
+#
+#     # Generate the course suggestions based on user input
+#     course_suggestions = suggest_course(' '.join(user_answers.values()))
+#
+#     # Prepare the chatbot's response for course suggestions
+#     response = "Based on your interests and skills, we suggest the following courses:\n"
+#     if course_suggestions:
+#         for i, course in enumerate(course_suggestions, start=1):
+#             response += f"{i}. {course}\n"
+#     else:
+#         response += "Sorry, no course suggestions available."
+#
+#     # Suggest subjects for each course
+#     subject_dict = suggest_subjects(course_suggestions)
+#
+#     # Add subjects to the response
+#     if subject_dict:
+#         response += "\nSubjects for each suggested course:\n"
+#         for course, subjects in subject_dict.items():
+#             response += f"{course}: {subjects}\n"
+#     else:
+#         response += "\nSorry, no subjects available for the suggested courses."
+#
+#     # Perform the job search based on user preferences
+#     interests = user_answers.get("interests")
+#     field_of_study = user_answers.get("field_of_study")
+#     skills = user_answers.get("skills")
+#     location = user_answers.get("location")
+#
+#     job_list = perform_job_search(interests, location, field_of_study, skills)
+#
+#     # Generate the job suggestions string
+#     stage_prompt_job = "\nHere are some job suggestions for you:"
+#     job_suggestions = ""
+#     for job in job_list:
+#         job_suggestions += f"\nJob Title: {job['job_title']}\n"
+#         job_suggestions += f"Company: {job['company_name']}\n"
+#         job_suggestions += f"Location: {job['job_location']}\n"
+#         job_suggestions += "------------------------\n"
+#
+#     # Add job suggestions to the response
+#     if job_suggestions:
+#         response += stage_prompt_job + job_suggestions
+#     else:
+#         response += "\nSorry, no job suggestions available."
+#
+#     return course_suggestions, response
+
+
 def chatbot_logic(answers):
     # Convert the user input to lowercase for consistency
     # user_input = user_input.lower()
@@ -131,7 +192,6 @@ def chatbot_logic(answers):
         job_suggestions += f"\nJob Title: {job['job_title']}\n"
         job_suggestions += f"Company: {job['company_name']}\n"
         job_suggestions += f"Location: {job['job_location']}\n"
-        job_suggestions += f"Link: {job['job_link']}\n"
         job_suggestions += "------------------------\n"
 
     # Generate the course suggestions based on user input
